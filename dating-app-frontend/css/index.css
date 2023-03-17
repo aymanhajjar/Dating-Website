@@ -1,0 +1,117 @@
+@import url('https://fonts.cdnfonts.com/css/proxima-nova-2');
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var, u, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section {
+	display: block;
+}
+body {
+	line-height: 1;
+}
+ol, ul {
+	list-style: none;
+}
+blockquote, q {
+	quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+	content: '';
+	content: none;
+}
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+
+body {
+    font-family: 'Proxima Nova';
+}
+
+.home-container {
+    height: 100vh;
+    background: url('../images/background.jpg') center center / cover no-repeat;
+}
+
+.home-text {
+    text-align: center;
+    padding-top: 8%;
+}
+
+.home-text h1 {
+    font-weight: bold;
+    font-size: 3rem;
+}
+
+.home-text p {
+    font-size: 1.4rem;
+    margin-top: 1rem;
+}
+
+.home-text button {
+    border-radius: 1rem;
+    padding: 1rem 2rem;
+    border: none;
+    margin-top: 1.5rem;
+    font-size: 1.2rem;
+    cursor: pointer;
+    font-family: 'Proxima Nova';
+    background-color: rgb(251, 106, 144);
+    transition: 0.3s all;
+}
+
+.home-text button:hover {
+    background-color: rgb(255, 174, 195);
+    transition: 0.3s all;
+}
+
+.header {
+    position: fixed;
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    padding: 2rem 3rem;
+    box-sizing: border-box;
+}
+
+.header nav {
+    display: flex;
+    font-size: 1.2rem;
+    width: 40%;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.header a {
+    cursor: pointer;
+}
+.user img {
+    cursor: pointer;
+    max-width: 45%;
+    max-height: 2rem;
+}
+
+.user {
+    display: flex;
+    justify-content: space-between;
+    width: 15%;
+}
