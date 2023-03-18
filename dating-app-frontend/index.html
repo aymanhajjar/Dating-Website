@@ -6,32 +6,85 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dating App</title>
     <link rel="stylesheet" type="text/css" href="css/index.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.3.4/axios.min.js"></script>
 </head>
 <body>
-    
-    <div class="home-container">
-        <div class="header">
-            <nav>
-                <a>Home</a>
-                <a>Browse</a>
-                <a>About Us</a>
-                <a>Contact Us</a>
-                <div class="user">
-                    <img src="images/heart.png">
-                    <img src="images/user.png">
-                </div>
-            </nav>
-        </div>
-        <div class="home-text">
-            <h1>Find your perfect match!</h1>
-            <p>You are just a few clicks away from finding the girl/guy of your dreams!</p>
-            <button type="button">Get started!</button>
-        </div>
-    </div>
 
-    <form class="popup-form" return="false">
+    <div id="main-container" class="main-container">
+
+        <div id="home-container" class="home-container">
+            <div class="header">
+                <nav>
+                    <a>Home</a>
+                    <a>Browse</a>
+                    <a>About Us</a>
+                    <a>Contact Us</a>
+                    <div class="user">
+                        <img src="images/heart.png">
+                        <img src="images/user.png">
+                    </div>
+                </nav>
+            </div>
+            <div class="home-text">
+                <h1>Find your perfect match!</h1>
+                <p>You are just a few clicks away from finding the girl/guy of your dreams!</p>
+                <button type="button" onclick="openForm('register')">Get started!</button>
+            </div>
+        </div>
+    
+        <form id="register-form" class="popup-form" return="false">
+        <img class="xclose" onclick="closeForm()" src="images/x-close.png">
+        <h3>Register</h3>
+            <div class="input-container">
+                <label for="fullname-register">Full Name:</label>
+                <input id="fullname-register" type="text" placeholder="Full Name">
+            </div>
+            <div class="input-container">
+                <label for="email-register">Email:</label>
+                <input id="email-register" type="email" placeholder="Email">
+            </div>
+            <div class="input-container">
+                <label for="password-register">Password:</label>
+                <input id="password-register" type="password" placeholder="Password">
+            </div>
+            <div class="input-container">
+                <label for="confirm-password">Confirm Password:</label>
+                <input id="confirm-password" type="password" placeholder="Confirm Password">
+            </div>
+            <div class="more-details">
+                <input id="age" class="more-details-element" type="number" placeholder="Age" name="age" min="1" max="120" step="1">
+                <select id="gender" class="more-details-element">
+                    <option value="" disabled selected>Gender</option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                </select>
+            </div>
+            <select id="location">
+                <option value="" disabled selected>Location</option>
+            </select>
+            <div class="errormessage" id="errormessage"></div>
+            <button type="button" onclick="submitForm('register')">Submit</button>
+            <span>Already have an account? <a onclick="openForm('login')">Log In</a></span>
+        </form>
+
+        <form id="login-form" class="popup-form" return="false">
+            <img class="xclose" onclick="closeForm()" src="images/x-close.png">
+            <h3>Log In</h3>
+                <div class="input-container">
+                    <label for="email-login">Email:</label>
+                    <input id="email-login" type="email" placeholder="Email">
+                </div>
+                <div class="input-container">
+                    <label for="password-login">Password:</label>
+                    <input id="password-login" type="password" placeholder="Password">
+                </div>
+                <div class="errormessage" id="errormessage-login"></div>
+                <button type="button" onclick="submitForm('login')">Submit</button>
+                <span>Don't have an account? <a onclick="openForm('register')">Register</a></span>
+            </form>
         
-    </form>
+    </div>
+    
     <script src="js/index.js"></script>
 </body>
 </html>
