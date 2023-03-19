@@ -12,9 +12,83 @@ const password_login = document.getElementById('password-login')
 const error = document.getElementById('errormessage')
 const error_login = document.getElementById('errormessage-login')
 const main_container = document.getElementById('home-container')
+const welcome = document.getElementById('welcome')
+const inbox = document.getElementById('inbox')
+const notifications = document.getElementById('notifications')
 const url = 'http://localhost:8000/api'
+let jwt = localStorage.getItem('jwt')
 
+console.log(jwt)
+getUserData()
 getData()
+
+
+async function getUserData() {
+    inbox.innerHTML = ''
+    if(jwt != null) {
+        await axios({
+            "method": "post",
+            "url": `${url}/refresh`,
+            headers: {
+                'Authorization': 'Bearer ' + jwt
+              }
+        }).then((result) => {
+            localStorage.setItem('jwt', result.data.authorisation.token)
+            welcome.innerHTML = `Welcome, <b>${result.data.user.name}</b>`
+            jwt = result.data.authorisation.token
+        }).catch((err) => {
+            console.error(err)
+        });
+
+        axios({
+            "method": "get",
+            "url": `${url}/getconvos`,
+            headers: {
+                'Authorization': 'Bearer ' + jwt
+            }
+        }).then((result) => {
+            if(result.data.convos.length == 0) {
+                inbox.innerHTML = 'No messages to show!'
+            } else {
+                result.data.convos.forEach((convo) => {
+                    if(convo.seen == 0) {
+                        inbox.innerHTML += `<div class="unread-message">
+                        <span class="message-author"><b>${convo.user.name}</b></span>
+                        <span class="message-content">${convo.content}</span>
+                        <span class="message-date">${convo.created_at}</span>
+                        </div>`
+                    }
+                })
+            }
+        }).catch((err) => {
+            console.error(err)
+        });
+
+        axios({
+            "method": "get",
+            "url": `${url}/getnotifications`,
+            headers: {
+                'Authorization': 'Bearer ' + jwt
+            }
+        }).then((result) => {
+            if(result.data.notifications.length == 0) {
+                notifications.innerHTML = 'No new notifications!'
+            } else {
+                result.data.notifications.forEach((notf) => {
+                    if(notf.seen == 0) {
+                        notifications.innerHTML += `<div class="unread-message">
+                        <span class="message-author"><b>${notf.target_user.name}</b></span>
+                        <span class="message-content">${notf.content}</span>
+                        </div>`
+                    }
+                })
+            }
+        }).catch((err) => {
+            console.error(err)
+        });
+
+    }
+}
 
 function getData() {
     axios({

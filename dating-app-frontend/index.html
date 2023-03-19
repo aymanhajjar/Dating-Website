@@ -20,18 +20,31 @@
                     <a>About Us</a>
                     <a>Contact Us</a>
                     <div class="user">
-                        <img src="images/heart.png">
-                        <img src="images/user.png">
+                        <div class="inbox-dropdown">
+                            <img onclick="openForm('login')" src="images/email.png">
+                            <div id="inbox" class="inbox-container">
+                            </div>
+                        </div>
+                        <div class="inbox-dropdown">
+                            <img onclick="openForm('login')" src="images/heart.png">
+                            <div id="notifications" class="inbox-container">
+                            </div>
+                        </div>
+                        <img onclick="openForm('login')" src="images/user.png">
                     </div>
                 </nav>
             </div>
             <div class="home-text">
                 <h1>Find your perfect match!</h1>
                 <p>You are just a few clicks away from finding the girl/guy of your dreams!</p>
-                <button type="button" onclick="openForm('register')">Get started!</button>
+                <div id="welcome" class="welcome"><button type="button" onclick="openForm('register')">Get started!</button>
+                </div>
             </div>
         </div>
     
+        <div id="browse" class="browse">
+
+        </div>
         <form id="register-form" class="popup-form" return="false">
         <img class="xclose" onclick="closeForm()" src="images/x-close.png">
         <h3>Register</h3>
@@ -82,8 +95,34 @@
                 <button type="button" onclick="submitForm('login')">Submit</button>
                 <span>Don't have an account? <a onclick="openForm('register')">Register</a></span>
             </form>
+
+            <div class="conversation-container">
+                <div class="message">
+                <img src="/w3images/bandmember.jpg" alt="Avatar">
+                <p>Hello. How are you today?</p>
+                <span class="time-right">11:00</span>
+                </div>
+
+                <div class="message darker">
+                <img src="/w3images/avatar_g2.jpg" alt="Avatar" class="right">
+                <p>Hey! I'm fine. Thanks for asking!</p>
+                <span class="time-left">11:01</span>
+                </div>
+
+                <div class="message">
+                <img src="/w3images/bandmember.jpg" alt="Avatar">
+                <p>Sweet! So, what do you wanna do today?</p>
+                <span class="time-right">11:02</span>
+                </div>
+
+                <div class="message darker">
+                <img src="/w3images/avatar_g2.jpg" alt="Avatar" class="right">
+                <p>Nah, I dunno. Play soccer.. or learn more coding perhaps?</p>
+                <span class="time-left">11:05</span>
+            </div>
+            <input type="text" placeholder="Type your reply...">
         
-    </div>
+            </div>
     
     <script src="js/index.js"></script>
 </body>
