@@ -42,6 +42,7 @@ const bio_prof = document.getElementById('bio-prof')
 const profile = document.getElementById('profile-container')
 const block_btn = document.getElementById('block-btn')
 const favorite_btn = document.getElementById('fav-btn')
+const search_input = document.getElementById('search')
 const website = {}
 website.url = 'http://localhost:8000/api'
 let jwt = localStorage.getItem('jwt')
@@ -389,7 +390,7 @@ function uploadImage(id) {
         result.data.forEach(person => {
             console.log(person)
             users.innerHTML += `
-            <div id="${person.id}" class="user-card ${person.gender == 'male' ? 'male-card' : 'female-card'}" onclick="openProf(${person.id})">
+            <div id="${person.user_id}" class="user-card ${person.gender == 'male' ? 'male-card' : 'female-card'}" onclick="openProf(${person.user_id})">
                 ${ person.path ? `<img class="card-img" src="${website.url}/storage/${person.path.path}">` : `<img class="card-img" src="images/profile_pic.png">`}
                 <span class="card-name">${person.user_get.name}</span>
             </div>
@@ -433,6 +434,10 @@ function uploadImage(id) {
             favorite_btn.innerHTML = 'Favorite'
         }
 
+        main_img_prof.src = "images/profile_pic.png"
+        img_one_prof.src = "images/image.png"
+        img_two_prof.src = "images/image.png"
+        img_three_prof.src = "images/image.png"
         if(person.photos.length > 0) {
             let assigned = [img_three_prof, img_two_prof, img_one_prof]
             person.photos.forEach(photo => {
@@ -497,6 +502,53 @@ function uploadImage(id) {
     }).catch((err) => {
         console.error(err)
     });
+  }
+
+  function search() {
+    users.innerHTML = ''
+    if(search_input.value.length > 0) {
+        axios({
+            "method": "get",
+            "url": `${website.url}/search/${search_input.value}`,
+            headers: {
+                'Authorization': 'Bearer ' + jwt
+            }
+        }).then((result) => {
+            users.innerHTML = ''
+            result.data.forEach(person => {
+                console.log(person)
+                users.innerHTML += `
+                <div id="${person.id}" class="user-card ${person.gender == 'male' ? 'male-card' : 'female-card'}" onclick="openProf(${person.user_id})">
+                    ${ person.path ? `<img class="card-img" src="${website.url}/storage/${person.path.path}">` : `<img class="card-img" src="images/profile_pic.png">`}
+                    <span class="card-name">${person.user_get.name}</span>
+                </div>
+                `
+            })
+        }).catch((err) => {
+            console.error(err)
+        });
+    } else {
+        axios({
+            "method": "get",
+            "url": `${website.url}/getusers`,
+            headers: {
+                'Authorization': 'Bearer ' + jwt
+            }
+        }).then((result) => {
+            users.innerHTML = ''
+            result.data.forEach(person => {
+                console.log(person)
+                users.innerHTML += `
+                <div id="${person.id}" class="user-card ${person.gender == 'male' ? 'male-card' : 'female-card'}" onclick="openProf(${person.user_id})">
+                    ${ person.path ? `<img class="card-img" src="${website.url}/storage/${person.path.path}">` : `<img class="card-img" src="images/profile_pic.png">`}
+                    <span class="card-name">${person.user_get.name}</span>
+                </div>
+                `
+            })
+        }).catch((err) => {
+            console.error(err)
+        });
+    }
   }
 
   function logOut() {

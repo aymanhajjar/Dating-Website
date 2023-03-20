@@ -605,8 +605,16 @@ body {
     gap: 1rem;
   }
 
-  .filter select {
+  .filter select,  .filter input {
     width: 100%;
+  }
+
+  .filter input {
+    border: none;
+    border-radius: 1rem;
+    padding: 1rem;
+    background-color: rgb(255, 241, 244);
+    transition: all 0.3s;
   }
 
   .users {

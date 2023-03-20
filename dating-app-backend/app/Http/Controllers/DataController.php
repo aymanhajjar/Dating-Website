@@ -89,4 +89,26 @@ class DataController extends Controller{
         return response()->json($response);
     }
 
+    public function searchUser($name, Request $request) {
+        $user = $request->user();
+        $id = $user->id;
+
+        $response = [];
+
+        $users = UserInfo::with(['user_get'])
+                            ->whereHas('user_get', function($query) use($name) {
+                                $query -> where('name', 'LIKE', '%'. $name .'%');
+                            })
+                            ->whereNot('user_id', '=', $id)
+                            ->get();
+
+        foreach ($users as $user) {
+            $photo = UserPhoto::select('path')->where('user_id', $user->user_id)->where('is_profile', 1)->first();
+            $user->path = $photo;
+            $response[] = $user;
+        }
+        $response[] = $name;
+        return response()->json($response);
+    }
+
 }

@@ -37,6 +37,7 @@ Route::controller(DataController::class)->group(function () {
     Route::get('getlocations', 'getLocations');
     Route::middleware('auth:api')->get('getuser/{id}', 'getUser');
     Route::middleware('auth:api')->get('getusers', 'getUsers');
+    Route::middleware('auth:api')->get('search/{name}', 'searchUser');
     Route::middleware('auth:api')->get('filterusers', 'filterUsers');
 
 });
