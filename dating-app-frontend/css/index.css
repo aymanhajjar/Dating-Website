@@ -128,7 +128,7 @@ body {
 }
 
 .popup-form {
-    position: absolute;
+    position: fixed;
     top: 40vh;
     left: 50vw;
     transform: translate(-50%,-50%);
@@ -170,6 +170,14 @@ body {
     filter: brightness(200%);
 }
 
+.xclose-message {
+  position: absolute;
+    top: 5%;
+    right: 5%;
+    width: 5%;
+    cursor: pointer;
+    filter: brightness(200%);
+}
 .popup-form h3 {
     font-size: 2rem;
     color: white;
@@ -321,7 +329,7 @@ body {
 }
 
 .conversation-container {
-    position: absolute;
+    position: fixed;
     top: 40vh;
     left: 50%;
     transform: translate(-50%,-50%);
@@ -330,7 +338,7 @@ body {
     opacity: 0;
     visibility: hidden;
     background: linear-gradient(#ff7792, #ff5073);
-    transition: all;
+    transition: all 0.3s;
 }
 
 .openForm {
@@ -416,7 +424,7 @@ body {
   }
 
   .editprofile-container {
-    position: absolute;
+    position: fixed;
     top: 40%;
     left: 50%;
     transform: translate(-50%,-50%);
@@ -434,7 +442,7 @@ body {
   }
 
   .profile-container {
-    position: absolute;
+    position: fixed;
     top: 40%;
     left: 50%;
     transform: translate(-50%,-50%);
@@ -688,4 +696,9 @@ body {
 .card-name {
   font-size: 1.5rem;
   font-weight: bold;
+}
+
+#name-prof {
+  font-weight: bold;
+  font-size: 2rem;
 }

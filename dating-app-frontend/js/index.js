@@ -46,23 +46,27 @@ const search_input = document.getElementById('search')
 const convo_container = document.getElementById('convo-container')
 const convo_popup = document.getElementById('convo-popup')
 const message_input = document.getElementById('message-input')
+const msg_btn = document.getElementById('msg-btn')
+const browse_container = document.getElementById('browse')
+const profile_dropdown = document.getElementById('profile-drop-container')
 const website = {}
 website.url = 'http://localhost:8000/api'
 let jwt = localStorage.getItem('jwt')
 let filter_age = ''
 let filter_gender = ''
 let filter_location = ''
-let profile_id = 0
-let user_id = 0
-let conversation_id = 0
+let profile_id = -1
+let user_id = -1
+let conversation_id = -1
 
 getUserData()
 getData()
 
-
 async function getUserData() {
+    profile_dropdown.style.visibility = 'hidden'
     inbox.innerHTML = ''
     if(jwt != null) {
+        profile_dropdown.style.visibility = 'visible'
         await axios({
             "method": "post",
             "url": `${website.url}/refresh`,
@@ -74,6 +78,7 @@ async function getUserData() {
             welcome.innerHTML = `Welcome, <b>${result.data.user.name}</b>`
             jwt = result.data.authorisation.token
             user_id = result.data.user.id
+
         }).catch((err) => {
             console.error(err)
         });
@@ -89,11 +94,12 @@ async function getUserData() {
                 inbox.innerHTML = 'No messages to show!'
             } else {
                 result.data.convos.forEach((convo) => {
+                    let date = new Date(convo.created_at)
                     if(convo.seen == 0) {
                         inbox.innerHTML += `<div class="unread-message" onclick="getConversation(${convo.conversation_id})">
                         <span class="message-author"><b>${convo.user.name}</b></span>
                         <span class="message-content">${convo.content}</span>
-                        <span class="message-date">${convo.created_at}</span>
+                        <span class="message-date">${date.toLocaleString()}</span>
                         </div>`
                     }
                 })
@@ -135,10 +141,8 @@ async function getUserData() {
             let assigned = [img_three, img_two, img_one]
             result.data.images.forEach(img => {
                 if(img.is_profile == 1) {
-                    console.log(img.path)
                     main_img.src = `${website.url}/storage/${img.path}`
                 } else {
-                    console.log(img.path)
                     let unassigned = assigned.pop()
                     unassigned.src = `${website.url}/storage/${img.path}`
                 }
@@ -173,7 +177,6 @@ async function getUserData() {
         }).then((result) => {
             users.innerHTML = ''
             result.data.forEach(person => {
-                console.log(person)
                 users.innerHTML += `
                 <div id="${person.id}" class="user-card ${person.gender == 'male' ? 'male-card' : 'female-card'}" onclick="openProf(${person.user_id})">
                     ${ person.path ? `<img class="card-img" src="${website.url}/storage/${person.path.path}">` : `<img class="card-img" src="images/profile_pic.png">`}
@@ -208,10 +211,12 @@ function openForm(form) {
         register_form.classList.add('openForm')
         main_container.classList.add('containerBlur')
         login_form.classList.remove('openForm')
+        browse_container.classList.add('containerBlur')
     } else if(form == 'login') {
         login_form.classList.add('openForm')
         main_container.classList.add('containerBlur')
         register_form.classList.remove('openForm')
+        browse_container.classList.add('containerBlur')
     }
 }
 
@@ -223,10 +228,14 @@ function closeForm() {
 
 function openEditProf() {
     edit_prof.classList.add('open-prof')
+    main_container.classList.add('containerBlur')
+    browse_container.classList.add('containerBlur')
 }
 
 function closeEditProf() {
     edit_prof.classList.remove('open-prof')
+    browse_container.classList.remove('containerBlur')
+    main_container.classList.remove('containerBlur')
 }
 
 function submitForm(form) {
@@ -339,7 +348,6 @@ function uploadImage(id) {
           'Authorization': 'Bearer ' + jwt
         }
       }).then(response => {
-        console.log(response.data, id)
         var src = response.data.path;
         src += "?rand=" + Math.random();
         if(id == 'img-main') {
@@ -374,7 +382,7 @@ function uploadImage(id) {
           'Authorization': 'Bearer ' + jwt
         }
       }).then(result => {
-
+        closeEditProf()
       }).catch(error => {
         console.error(error);
       });
@@ -394,7 +402,6 @@ function uploadImage(id) {
     }).then((result) => {
         users.innerHTML = ''
         result.data.forEach(person => {
-            console.log(person)
             users.innerHTML += `
             <div id="${person.user_id}" class="user-card ${person.gender == 'male' ? 'male-card' : 'female-card'}" onclick="openProf(${person.user_id})">
                 ${ person.path ? `<img class="card-img" src="${website.url}/storage/${person.path.path}">` : `<img class="card-img" src="images/profile_pic.png">`}
@@ -407,7 +414,7 @@ function uploadImage(id) {
     });
   }
 
-  function openProf(id) {
+function openProf(id) {
     profile_id = id
     axios({
         "method": "get",
@@ -416,7 +423,6 @@ function uploadImage(id) {
             'Authorization': 'Bearer ' + jwt
         }
     }).then((result) => {
-        console.log(result)
         person = result.data.info
         name_prof.innerHTML = person.user_get.name
         age_prof.innerHTML = person.age
@@ -456,6 +462,8 @@ function uploadImage(id) {
             })
         }
         profile.classList.add('open-prof')
+        main_container.classList.add('containerBlur')
+        browse_container.classList.add('containerBlur')
     }).catch((err) => {
         console.error(err)
     });
@@ -463,12 +471,13 @@ function uploadImage(id) {
 
   function closeProf() {
         profile.classList.remove('open-prof')
+        main_container.classList.remove('containerBlur')
+        browse_container.classList.remove('containerBlur')
   }
 
   function block() {
     let block_data = new FormData()
     block_data.append('blocked_id', profile_id)
-    console.log(profile_id)
 
     axios({
         "method": "post",
@@ -522,7 +531,6 @@ function uploadImage(id) {
         }).then((result) => {
             users.innerHTML = ''
             result.data.forEach(person => {
-                console.log(person)
                 users.innerHTML += `
                 <div id="${person.id}" class="user-card ${person.gender == 'male' ? 'male-card' : 'female-card'}" onclick="openProf(${person.user_id})">
                     ${ person.path ? `<img class="card-img" src="${website.url}/storage/${person.path.path}">` : `<img class="card-img" src="images/profile_pic.png">`}
@@ -543,7 +551,6 @@ function uploadImage(id) {
         }).then((result) => {
             users.innerHTML = ''
             result.data.forEach(person => {
-                console.log(person)
                 users.innerHTML += `
                 <div id="${person.id}" class="user-card ${person.gender == 'male' ? 'male-card' : 'female-card'}" onclick="openProf(${person.user_id})">
                     ${ person.path ? `<img class="card-img" src="${website.url}/storage/${person.path.path}">` : `<img class="card-img" src="images/profile_pic.png">`}
@@ -572,32 +579,54 @@ function uploadImage(id) {
     });
   }
 
+  function scrollToDiv(div) {
+    div == 'browse' ? browse_container.scrollIntoView({ behavior: 'smooth' }) : main_container.scrollIntoView({ behavior: 'smooth' })
+  }
+
+  function closeConvo() {
+    convo_popup.classList.remove('openForm')
+    main_container.classList.remove('containerBlur')
+    browse_container.classList.remove('containerBlur')
+  }
+
   function getConversation(id) {
+    closeProf()
     axios({
         "method": "get",
-        "url": `${website.url}/getconvo/${id}`,
+        "url": id ? `${website.url}/getconvo?convo_id=${id}` : `${website.url}/getconvo?target_user=${profile_id}`,
         headers: {
             'Authorization': 'Bearer ' + jwt
         }
     }).then((result) => {
-        result.data.messages.forEach(msg => {
-            if(msg.author_id == user_id) {
-                convo_container.innerHTML += `<div class="message-right">
-                <h4>You</h4>
-                <p>${msg.content}</p>
-                <span class="time-right">${msg.created_at}</span>
-                </div>`
-            } else {
-                convo_container.innerHTML += `<div class="message-left">
-                <p>${msg.content}</p>
-                <span class="time-left">${msg.created_at}</span>
-                </div>`
-            }
-        })
+        if(result.data.messages.length > 0) {
+            convo_container.innerHTML = ''
+            result.data.messages.forEach(msg => {
+                let date = new Date(msg.created_at)
+                if(msg.author_id == user_id) {
+                    convo_container.innerHTML += `<div class="message-right">
+                    <h4>You</h4>
+                    <p>${msg.content}</p>
+                    <span class="time-right">${date.toLocaleString()}</span>
+                    </div>`
+                } else {
+                    convo_container.innerHTML += `<div class="message-left">
+                    <p>${msg.content}</p>
+                    <span class="time-left">${date.toLocaleString()}</span>
+                    </div>`
+                }
+            })
 
-        conversation_id = id
+            conversation_id = id
+        } else {
+            convo_container.innerHTML = 'Start a conversation...'
+            console.log(result.data['convo_id'])
+            conversation_id = result.data['convo_id']
+        }
+
 
         convo_popup.classList.add('openForm')
+        main_container.classList.add('containerBlur')
+        browse_container.classList.add('containerBlur')
     }).catch((err) => {
         console.error(err)
     });
@@ -614,6 +643,7 @@ function uploadImage(id) {
             let msg_data = new FormData()
             msg_data.append('message', message_input.value)
             msg_data.append('convo_id', conversation_id)
+            console.log(conversation_id)
 
             axios({
                 "method": "post",

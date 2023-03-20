@@ -44,7 +44,7 @@ Route::controller(DataController::class)->group(function () {
 
 Route::controller(UserDataController::class)->group(function () {
     Route::middleware('auth:api')->get('getconvos', 'getConvos');
-    Route::middleware('auth:api')->get('getconvo/{id}', 'getConvo');
+    Route::middleware('auth:api')->get('getconvo', 'getConvo');
     Route::middleware('auth:api')->get('getnotifications', 'getNotifications');
     Route::middleware('auth:api')->get('getinfo', 'getInfo');
     Route::middleware('auth:api')->post('updateinfo', 'updateInfo');

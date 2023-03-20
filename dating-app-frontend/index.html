@@ -15,24 +15,24 @@
         <div id="home-container" class="home-container">
             <div class="header">
                 <nav>
-                    <a>Home</a>
-                    <a>Browse</a>
+                    <a onclick="scrollToDiv('home')">Home</a>
+                    <a onclick="scrollToDiv('browse')">Browse</a>
                     <a>About Us</a>
                     <a>Contact Us</a>
                     <div class="user">
                         <div class="inbox-dropdown">
-                            <img onclick="openForm('login')" src="images/email.png">
+                            <img  src="images/email.png">
                             <div id="inbox" class="inbox-container">
                             </div>
                         </div>
                         <div class="inbox-dropdown">
-                            <img onclick="openForm('login')" src="images/heart.png">
+                            <img  src="images/heart.png">
                             <div id="notifications" class="inbox-container">
                             </div>
                         </div>
                         <div class="profile-dropdown">
-                            <img onclick="openForm('login')" src="images/user.png">
-                            <div class="profile-drp-container">
+                            <img src="images/user.png">
+                            <div id="profile-drop-container" class="profile-drp-container">
                                 <div class="unread-message" onclick="openEditProf()">Edit Profile</div>
                                 <div class="unread-message" onclick="logOut()">Log Out</div>
                             </div>
@@ -139,7 +139,8 @@
             </form>
 
             <div id="convo-popup" class="conversation-container">
-                <div id="convo-container" ></div>
+                <img class="xclose-message" onclick="closeConvo()" src="images/x-close.png">
+                <div id="convo-container" >Start a conversation...</div>
             <input id="message-input" type="text" placeholder="Type your reply... (Press Enter to send)">
             </div>
 
@@ -222,7 +223,6 @@
                     <hr>
                     <div class="info-prof">
                         <div>
-                            <b>Full Name:</b>
                             <span id="name-prof"></span>
                         </div>
                         <div >
@@ -245,6 +245,7 @@
 
                 </div>
                 <div class="actions">
+                    <button id="msg-btn" type="button" onclick="getConversation()">Message</button>
                     <button id="block-btn" type="button" onclick="block()">Block</button>
                     <button id="fav-btn" type="button" onclick="favorite()">Favorite</button>
                 </div>
