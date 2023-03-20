@@ -31,6 +31,17 @@ class UserDataController extends Controller{
             ]);
         }
 
+    public function getConvo($convo_id, Request $request)
+        {
+            
+            $user = $request->user();
+            $id = $user->id;
+            $messages = Message::with('User')->where('conversation_id', $convo_id)->orderBy('created_at', 'ASC')->get();
+            return response()->json([
+                'messages' => $messages
+            ]);
+        }
+
     public function getNotifications(Request $request)
         {
             
@@ -65,6 +76,21 @@ class UserDataController extends Controller{
             'name' => $request->input('name'),
             'email' => $request->input('email')
         ]);
+        return response()->json([
+            'status' => 'success!'
+        ]);
+    }
+
+    public function sendMessage(Request $request) {
+        $user = $request->user();
+        $id = $user->id;
+
+        Message::Create(
+            ['author_id' => $id,
+            'conversation_id' => $request->input('convo_id'),
+            'content' => $request->input('message')]
+        );
+
         return response()->json([
             'status' => 'success!'
         ]);

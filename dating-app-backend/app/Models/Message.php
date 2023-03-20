@@ -17,8 +17,8 @@ class Message extends Model
     
     protected $table = 'Messages';
 
-    public $timestamps = false;
+    public $timestamps = true;
 
-    protected $fillable = ['author_id', 'conversation_id', 'content', 'created_at', 'updated_at', 'seen'];
+    protected $fillable = ['author_id', 'conversation_id', 'content', 'seen'];
 }
 

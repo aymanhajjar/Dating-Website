@@ -138,32 +138,9 @@
                 <span>Don't have an account? <a onclick="openForm('register')">Register</a></span>
             </form>
 
-            <div class="conversation-container">
-                <div class="message">
-                <img src="/w3images/bandmember.jpg" alt="Avatar">
-                <p>Hello. How are you today?</p>
-                <span class="time-right">11:00</span>
-                </div>
-
-                <div class="message darker">
-                <img src="/w3images/avatar_g2.jpg" alt="Avatar" class="right">
-                <p>Hey! I'm fine. Thanks for asking!</p>
-                <span class="time-left">11:01</span>
-                </div>
-
-                <div class="message">
-                <img src="/w3images/bandmember.jpg" alt="Avatar">
-                <p>Sweet! So, what do you wanna do today?</p>
-                <span class="time-right">11:02</span>
-                </div>
-
-                <div class="message darker">
-                <img src="/w3images/avatar_g2.jpg" alt="Avatar" class="right">
-                <p>Nah, I dunno. Play soccer.. or learn more coding perhaps?</p>
-                <span class="time-left">11:05</span>
-            </div>
-            <input type="text" placeholder="Type your reply...">
-        
+            <div id="convo-popup" class="conversation-container">
+                <div id="convo-container" ></div>
+            <input id="message-input" type="text" placeholder="Type your reply... (Press Enter to send)">
             </div>
 
             <div id="editprofile-container" class="editprofile-container">

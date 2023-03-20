@@ -43,6 +43,9 @@ const profile = document.getElementById('profile-container')
 const block_btn = document.getElementById('block-btn')
 const favorite_btn = document.getElementById('fav-btn')
 const search_input = document.getElementById('search')
+const convo_container = document.getElementById('convo-container')
+const convo_popup = document.getElementById('convo-popup')
+const message_input = document.getElementById('message-input')
 const website = {}
 website.url = 'http://localhost:8000/api'
 let jwt = localStorage.getItem('jwt')
@@ -50,6 +53,8 @@ let filter_age = ''
 let filter_gender = ''
 let filter_location = ''
 let profile_id = 0
+let user_id = 0
+let conversation_id = 0
 
 getUserData()
 getData()
@@ -68,6 +73,7 @@ async function getUserData() {
             localStorage.setItem('jwt', result.data.authorisation.token)
             welcome.innerHTML = `Welcome, <b>${result.data.user.name}</b>`
             jwt = result.data.authorisation.token
+            user_id = result.data.user.id
         }).catch((err) => {
             console.error(err)
         });
@@ -84,7 +90,7 @@ async function getUserData() {
             } else {
                 result.data.convos.forEach((convo) => {
                     if(convo.seen == 0) {
-                        inbox.innerHTML += `<div class="unread-message">
+                        inbox.innerHTML += `<div class="unread-message" onclick="getConversation(${convo.conversation_id})">
                         <span class="message-author"><b>${convo.user.name}</b></span>
                         <span class="message-content">${convo.content}</span>
                         <span class="message-date">${convo.created_at}</span>
@@ -565,3 +571,63 @@ function uploadImage(id) {
         console.error(err)
     });
   }
+
+  function getConversation(id) {
+    axios({
+        "method": "get",
+        "url": `${website.url}/getconvo/${id}`,
+        headers: {
+            'Authorization': 'Bearer ' + jwt
+        }
+    }).then((result) => {
+        result.data.messages.forEach(msg => {
+            if(msg.author_id == user_id) {
+                convo_container.innerHTML += `<div class="message-right">
+                <h4>You</h4>
+                <p>${msg.content}</p>
+                <span class="time-right">${msg.created_at}</span>
+                </div>`
+            } else {
+                convo_container.innerHTML += `<div class="message-left">
+                <p>${msg.content}</p>
+                <span class="time-left">${msg.created_at}</span>
+                </div>`
+            }
+        })
+
+        conversation_id = id
+
+        convo_popup.classList.add('openForm')
+    }).catch((err) => {
+        console.error(err)
+    });
+  }
+
+  message_input.addEventListener('keyup', (event)=> 
+    {
+        if (event.keyCode == 13) {
+            convo_container.innerHTML += `<div class="message-right">
+                <h4>You</h4>
+                <p>${message_input.value}</p>
+                </div>`
+
+            let msg_data = new FormData()
+            msg_data.append('message', message_input.value)
+            msg_data.append('convo_id', conversation_id)
+
+            axios({
+                "method": "post",
+                "url": `${website.url}/sendmessage`,
+                headers: {
+                    'Authorization': 'Bearer ' + jwt
+                },
+                data: msg_data
+            }).then((result) => {
+                
+            }).catch((err) => {
+                console.error(err)
+            });
+            message_input.value = ''
+        }
+  }) 
+  
