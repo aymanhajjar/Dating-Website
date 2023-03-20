@@ -25,5 +25,5 @@ class Notification extends Model
 
     public $timestamps = false;
 
-    protected $fillable = ['user_id', 'target_user_id', 'seen'];
+    protected $fillable = ['user_id', 'target_user_id', 'content', 'seen'];
 }

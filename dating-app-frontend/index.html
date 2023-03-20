@@ -30,7 +30,13 @@
                             <div id="notifications" class="inbox-container">
                             </div>
                         </div>
-                        <img onclick="openForm('login')" src="images/user.png">
+                        <div class="profile-dropdown">
+                            <img onclick="openForm('login')" src="images/user.png">
+                            <div class="profile-drp-container">
+                                <div class="unread-message" onclick="openEditProf()">Edit Profile</div>
+                                <div class="unread-message" onclick="logOut()">Log Out</div>
+                            </div>
+                    </div>
                     </div>
                 </nav>
             </div>
@@ -43,9 +49,41 @@
         </div>
     
         <div id="browse" class="browse">
+            <h3>Find Your Match</h3>
+            <div class="browse-container">
+                <div class="filters">
+                    <div class="filter">
+                        <label>Filter by gender:</label>
+                        <select id="gender-filter" class="more-details-element" onchange="filter('gender')">
+                            <option value="" selected>Gender</option>
+                            <option value="male">Male</option>
+                            <option value="female">Female</option>
+                        </select>
+                    </div>
+                    <div class="filter">
+                        <label>Filter by age:</label>
+                        <select id="age-filter" class="more-details-element" onchange="filter('age')">
+                            <option value="" selected>Age</option>
+                            <option value="25">18-25</option>
+                            <option value="30">25-30</option>
+                            <option value="35">30-35</option>
+                            <option value="40">35-40</option>
+                        </select>
+                    </div>
+                    <div class="filter">
+                        <label>Filter by location:</label>
+                        <select id="location-filter" class="more-details-element" onchange="filter('location')">
+                            <option value="" selected>Location</option>
+                        </select>
+                    </div>
+                </div>
 
+                <div id="users" class="users">
+                    Login to find users
+                </div>
+            </div>
         </div>
-        <form id="register-form" class="popup-form" return="false">
+        <form id="register-form" class="popup-form">
         <img class="xclose" onclick="closeForm()" src="images/x-close.png">
         <h3>Register</h3>
             <div class="input-container">
@@ -80,7 +118,7 @@
             <span>Already have an account? <a onclick="openForm('login')">Log In</a></span>
         </form>
 
-        <form id="login-form" class="popup-form" return="false">
+        <form id="login-form" class="popup-form">
             <img class="xclose" onclick="closeForm()" src="images/x-close.png">
             <h3>Log In</h3>
                 <div class="input-container">
@@ -122,6 +160,113 @@
             </div>
             <input type="text" placeholder="Type your reply...">
         
+            </div>
+
+            <div id="editprofile-container" class="editprofile-container">
+                <img class="xclose-editprof" onclick="closeEditProf()" src="images/x-close.png">
+                <div class="image-container">
+                    <img id="img-main" class="profile-img" src="images/profile_pic.png" onclick="uploadImage('img-main')">
+                    <span class="tootlip">Add/Change Photo</span>
+                </div>
+                <div class="details">
+                    <div class="profile-pictures">
+                        <div class="add-image-container">
+                            <img id="img-one" class="add-image" src="images/image.png" onclick="uploadImage('img-one')">
+                            <span class="tootlip">Add/Change Photo</span>
+                        </div>
+                        <div class="add-image-container">
+                            <img id="img-two" class="add-image" src="images/image.png" onclick="uploadImage('img-two')">
+                            <span class="tootlip">Add/Change Photo</span>
+                        </div>
+                        <div class="add-image-container">
+                            <img id="img-three" class="add-image" src="images/image.png" onclick="uploadImage('img-three')">
+                            <span class="tootlip">Add/Change Photo</span>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="info">
+                        <div class="info-input">
+                            <b>Full Name:</b>
+                            <input id="edit-fullname" type="text" placeholder="Full Name">
+                        </div>
+                        <div class="info-input">
+                            <b>Email:</b>
+                            <input id="edit-email" type="text" placeholder="Email">
+                        </div>
+                        <div class="info-input">
+                            <b>Age:</b>
+                            <input id="edit-age" type="text" placeholder="Age">
+                        </div>
+                        <div class="info-input">
+                            <b>Location:</b>
+                            <select id="edit-location">
+                                <option value="" disabled selected>Location</option>
+                            </select>
+                        </div>
+                        <div class="info-input">
+                            <b>Gender:</b>
+                            <select id="edit-gender" >
+                                <option value="" disabled selected>Gender</option>
+                                <option value="male">Male</option>
+                                <option value="female">Female</option>
+                            </select>
+                        </div>
+                        <div class="info-input">
+                            <b>Bio:</b>
+                            <textarea id="edit-bio"></textarea>
+                        </div>
+                    </div>
+
+                </div>
+                <button type="button" onclick="updateInfo()">Save</button>
+            </div>
+
+            <div id="profile-container" class="profile-container">
+                <img class="xclose-editprof" onclick="closeProf()" src="images/x-close.png">
+                <div class="image-container">
+                    <img id="img-main-prof" class="profile-img" src="images/profile_pic.png">
+                </div>
+                <div class="details">
+                    <div class="profile-pictures">
+                        <div class="add-image-container">
+                            <img id="img-one-prof" class="add-image" src="images/image.png">
+                        </div>
+                        <div class="add-image-container">
+                            <img id="img-two-prof" class="add-image" src="images/image.png">
+                        </div>
+                        <div class="add-image-container">
+                            <img id="img-three-prof" class="add-image" src="images/image.png">
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="info-prof">
+                        <div>
+                            <b>Full Name:</b>
+                            <span id="name-prof"></span>
+                        </div>
+                        <div >
+                            <b>Age:</b>
+                            <span id="age-prof"></span>
+                        </div>
+                        <div>
+                            <b>Location:</b>
+                            <span id="location-prof"></span>
+                        </div>
+                        <div >
+                            <b>Gender:</b>
+                            <span id="gender-prof"></span>
+                        </div>
+                        <div>
+                            <b>Bio:</b>
+                            <span id="bio-prof"></span>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="actions">
+                    <button id="block-btn" type="button" onclick="block()">Block</button>
+                    <button id="fav-btn" type="button" onclick="favorite()">Favorite</button>
+                </div>
             </div>
     
     <script src="js/index.js"></script>

@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Message;
 use App\Models\Conversation;
 use App\Models\Notification;
+use App\Models\UserInfo;
+use App\Models\User;
 
 class UserDataController extends Controller{
     
@@ -39,5 +41,33 @@ class UserDataController extends Controller{
                 'notifications' => $notfs
             ]);
         }
+
+    public function getInfo(Request $request)
+    {
+        $user = $request->user();
+        $id = $user->id;
+        $info = UserInfo::with(['user'])->where('user_id', $id)->get();
+        return response()->json([
+            'info' => $info
+        ]);
+    }
+
+    public function updateInfo(Request $request) {
+        $user = $request->user();
+        $id = $user->id;
+        UserInfo::where('user_id', $id)->update([
+            'age' => $request->input('age'),
+            'gender' => $request->input('gender'),
+            'location_id' => $request->input('location'),
+            'bio' => $request->input('bio') ? $request->input('bio') : ''
+        ]);
+        User::where('id', $id)->update([
+            'name' => $request->input('name'),
+            'email' => $request->input('email')
+        ]);
+        return response()->json([
+            'status' => 'success!'
+        ]);
+    }
 
 }

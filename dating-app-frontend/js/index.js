@@ -15,10 +15,41 @@ const main_container = document.getElementById('home-container')
 const welcome = document.getElementById('welcome')
 const inbox = document.getElementById('inbox')
 const notifications = document.getElementById('notifications')
-const url = 'http://localhost:8000/api'
+const main_img = document.getElementById('img-main')
+const img_one = document.getElementById('img-one')
+const img_two = document.getElementById('img-two')
+const img_three = document.getElementById('img-three')
+const edit_fullname = document.getElementById('edit-fullname')
+const edit_email = document.getElementById('edit-email')
+const edit_age = document.getElementById('edit-age')
+const edit_location = document.getElementById('edit-location')
+const edit_gender = document.getElementById('edit-gender')
+const edit_bio = document.getElementById('edit-bio')
+const users = document.getElementById('users')
+const gender_filter = document.getElementById('gender-filter')
+const age_filter = document.getElementById('age-filter')
+const location_filter = document.getElementById('location-filter')
+const edit_prof = document.getElementById('editprofile-container')
+const main_img_prof = document.getElementById('img-main-prof')
+const img_one_prof = document.getElementById('img-one-prof')
+const img_two_prof = document.getElementById('img-two-prof')
+const img_three_prof = document.getElementById('img-three-prof')
+const name_prof = document.getElementById('name-prof')
+const age_prof = document.getElementById('age-prof')
+const location_prof = document.getElementById('location-prof')
+const gender_prof = document.getElementById('gender-prof')
+const bio_prof = document.getElementById('bio-prof')
+const profile = document.getElementById('profile-container')
+const block_btn = document.getElementById('block-btn')
+const favorite_btn = document.getElementById('fav-btn')
+const website = {}
+website.url = 'http://localhost:8000/api'
 let jwt = localStorage.getItem('jwt')
+let filter_age = ''
+let filter_gender = ''
+let filter_location = ''
+let profile_id = 0
 
-console.log(jwt)
 getUserData()
 getData()
 
@@ -28,7 +59,7 @@ async function getUserData() {
     if(jwt != null) {
         await axios({
             "method": "post",
-            "url": `${url}/refresh`,
+            "url": `${website.url}/refresh`,
             headers: {
                 'Authorization': 'Bearer ' + jwt
               }
@@ -42,7 +73,7 @@ async function getUserData() {
 
         axios({
             "method": "get",
-            "url": `${url}/getconvos`,
+            "url": `${website.url}/getconvos`,
             headers: {
                 'Authorization': 'Bearer ' + jwt
             }
@@ -66,7 +97,7 @@ async function getUserData() {
 
         axios({
             "method": "get",
-            "url": `${url}/getnotifications`,
+            "url": `${website.url}/getnotifications`,
             headers: {
                 'Authorization': 'Bearer ' + jwt
             }
@@ -87,16 +118,78 @@ async function getUserData() {
             console.error(err)
         });
 
+        axios({
+            "method": "get",
+            "url": `${website.url}/getimages`,
+            headers: {
+                'Authorization': 'Bearer ' + jwt
+            }
+        }).then((result) => {
+            let assigned = [img_three, img_two, img_one]
+            result.data.images.forEach(img => {
+                if(img.is_profile == 1) {
+                    console.log(img.path)
+                    main_img.src = `${website.url}/storage/${img.path}`
+                } else {
+                    console.log(img.path)
+                    let unassigned = assigned.pop()
+                    unassigned.src = `${website.url}/storage/${img.path}`
+                }
+            })
+        }).catch((err) => {
+            console.error(err)
+        });
+
+        axios({
+            "method": "get",
+            "url": `${website.url}/getinfo`,
+            headers: {
+                'Authorization': 'Bearer ' + jwt
+            }
+        }).then((result) => {
+            let res = result.data.info[0]
+            edit_fullname.value = res.user.name
+            edit_email.value = res.user.email
+            edit_age.value = res.age
+            edit_gender.value = res.gender
+            edit_location.value = res.location_id
+        }).catch((err) => {
+            console.error(err)
+        });
+
+        axios({
+            "method": "get",
+            "url": `${website.url}/getusers`,
+            headers: {
+                'Authorization': 'Bearer ' + jwt
+            }
+        }).then((result) => {
+            users.innerHTML = ''
+            result.data.forEach(person => {
+                console.log(person)
+                users.innerHTML += `
+                <div id="${person.id}" class="user-card ${person.gender == 'male' ? 'male-card' : 'female-card'}" onclick="openProf(${person.user_id})">
+                    ${ person.path ? `<img class="card-img" src="${website.url}/storage/${person.path.path}">` : `<img class="card-img" src="images/profile_pic.png">`}
+                    <span class="card-name">${person.user_get.name}</span>
+                </div>
+                `
+            })
+        }).catch((err) => {
+            console.error(err)
+        });
+
     }
 }
 
 function getData() {
     axios({
         "method": "get",
-        "url": `${url}/getlocations`,
+        "url": `${website.url}/getlocations`,
     }).then((result) => {
         result.data.forEach((loc) => {
             location_selector.innerHTML += `<option value="${loc.id}">${loc.name}</option>`
+            edit_location.innerHTML += `<option value="${loc.id}">${loc.name}</option>`
+            location_filter.innerHTML += `<option value="${loc.id}">${loc.name}</option>`
         })
     }).catch((err) => {
         console.error(err)
@@ -121,6 +214,14 @@ function closeForm() {
     main_container.classList.remove('containerBlur')
 }
 
+function openEditProf() {
+    edit_prof.classList.add('open-prof')
+}
+
+function closeEditProf() {
+    edit_prof.classList.remove('open-prof')
+}
+
 function submitForm(form) {
     if(form == 'register') {
         if(validateForm()) {
@@ -134,11 +235,15 @@ function submitForm(form) {
 
             axios({
                 "method": "post",
-                "url": `${url}/register`,
+                "url": `${website.url}/register`,
                 'data': register_data
             }).then((result) => {
-                console.log(result)
+                localStorage.setItem('jwt', result.data.authorisation.token)
+                location.reload() 
             }).catch((err) => {
+                if(err.response.status == 500) {
+                    error_login.innerHTML = 'Failed to validate'
+                }
                 console.error(err)
             });
         }
@@ -151,10 +256,11 @@ function submitForm(form) {
 
             axios({
                 "method": "post",
-                "url": `${url}/login`,
+                "url": `${website.url}/login`,
                 'data': login_data
             }).then((result) => {
                 localStorage.setItem('jwt', result.data.authorisation.token)
+                location.reload() 
             }).catch((err) => {
                 if(err.response.status == 401) {
                     error_login.innerHTML = 'Wrong email/password'
@@ -211,3 +317,199 @@ function validateForm() {
     }
     return true
 }
+
+function uploadImage(id) {
+    const fileInput = document.createElement('input')
+    fileInput.type = 'file'
+    fileInput.addEventListener('change', (event) => {
+    const file = event.target.files[0]
+    const image_data = new FormData()
+    image_data.append('type', id)
+    image_data.append('image', fileInput.files[0])
+
+    axios.post(`${website.url}/updateimage`, image_data, {
+        headers: {
+          'Authorization': 'Bearer ' + jwt
+        }
+      }).then(response => {
+        console.log(response.data, id)
+        var src = response.data.path;
+        src += "?rand=" + Math.random();
+        if(id == 'img-main') {
+            main_img.src = `${website.url}/storage/${src}?timestamp=123456789`
+        } else if (id == 'img-one') {
+            img_one.src = `${website.url}/storage/${src}`
+        } else if (id == 'img-two') {
+            img_two.src = `${website.url}/storage/${src}`
+        } else if (id == 'img-three') {
+            img_three.src = `${website.url}/storage/${src}`
+        }
+      }).catch(error => {
+        console.error(error);
+      });
+
+    })
+
+    fileInput.click();
+  }
+
+  function updateInfo() {
+    const info_data = new FormData()
+    info_data.append('name', edit_fullname.value)
+    info_data.append('email', edit_email.value)
+    info_data.append('age', edit_age.value)
+    info_data.append('location', edit_location.value)
+    info_data.append('gender', edit_gender.value)
+    info_data.append('bio', edit_bio.value)
+
+    axios.post(`${website.url}/updateinfo`, info_data, {
+        headers: {
+          'Authorization': 'Bearer ' + jwt
+        }
+      }).then(result => {
+
+      }).catch(error => {
+        console.error(error);
+      });
+  }
+
+  function filter(type) {
+    filter_age = age_filter.value
+    filter_gender = gender_filter.value
+    filter_location = location_filter.value
+
+    axios({
+        "method": "get",
+        "url": `${website.url}/filterusers?age=${filter_age}&gender=${filter_gender}&location=${filter_location}`,
+        headers: {
+            'Authorization': 'Bearer ' + jwt
+        }
+    }).then((result) => {
+        users.innerHTML = ''
+        result.data.forEach(person => {
+            console.log(person)
+            users.innerHTML += `
+            <div id="${person.id}" class="user-card ${person.gender == 'male' ? 'male-card' : 'female-card'}" onclick="openProf(${person.id})">
+                ${ person.path ? `<img class="card-img" src="${website.url}/storage/${person.path.path}">` : `<img class="card-img" src="images/profile_pic.png">`}
+                <span class="card-name">${person.user_get.name}</span>
+            </div>
+            `
+        })
+    }).catch((err) => {
+        console.error(err)
+    });
+  }
+
+  function openProf(id) {
+    profile_id = id
+    axios({
+        "method": "get",
+        "url": `${website.url}/getuser/${id}`,
+        headers: {
+            'Authorization': 'Bearer ' + jwt
+        }
+    }).then((result) => {
+        console.log(result)
+        person = result.data.info
+        name_prof.innerHTML = person.user_get.name
+        age_prof.innerHTML = person.age
+        location_prof.innerHTML = person.location.name
+        gender_prof.innerHTML = person.gender
+        if(person.bio_prof) {
+            bio_prof.innerHTML = person.bio_prof
+        } else {
+            bio_prof.innerHTML = "<i>No Bio</i>"
+        }
+
+        if(result.data.blocked == 'true') {
+            block_btn.innerHTML = 'Unblock'
+        } else {
+            block_btn.innerHTML = 'Block'
+        }
+
+        if(result.data.favorite == 'true') {
+            favorite_btn.innerHTML = 'Remove from favorites'
+        } else {
+            favorite_btn.innerHTML = 'Favorite'
+        }
+
+        if(person.photos.length > 0) {
+            let assigned = [img_three_prof, img_two_prof, img_one_prof]
+            person.photos.forEach(photo => {
+                if(photo.is_profile == 1) {
+                    main_img_prof.src = `${website.url}/storage/${photo.path}`
+                } else {
+                    let unassigned = assigned.pop()
+                    unassigned.src = `${website.url}/storage/${photo.path}`
+                }
+            })
+        }
+        profile.classList.add('open-prof')
+    }).catch((err) => {
+        console.error(err)
+    });
+  }
+
+  function closeProf() {
+        profile.classList.remove('open-prof')
+  }
+
+  function block() {
+    let block_data = new FormData()
+    block_data.append('blocked_id', profile_id)
+    console.log(profile_id)
+
+    axios({
+        "method": "post",
+        "url": `${website.url}/block`,
+        headers: {
+            'Authorization': 'Bearer ' + jwt
+        },
+        data: block_data
+    }).then((result) => {
+        if(result.data == true) {
+            block_btn.innerHTML = 'Unblock'
+        } else {
+            block_btn.innerHTML = 'Block'
+        }
+    }).catch((err) => {
+        console.error(err)
+    });
+  }
+  
+  function favorite() {
+    let fav_data = new FormData()
+    fav_data.append('favorite_id', profile_id)
+
+    axios({
+        "method": "post",
+        "url": `${website.url}/favorite`,
+        headers: {
+            'Authorization': 'Bearer ' + jwt
+        },
+        data: fav_data
+    }).then((result) => {
+        if(result.data == true) {
+            favorite_btn.innerHTML = 'Remove from favorites'
+        } else {
+            favorite_btn.innerHTML = 'Favorite'
+        }
+    }).catch((err) => {
+        console.error(err)
+    });
+  }
+
+  function logOut() {
+    axios({
+        "method": "post",
+        "url": `${website.url}/logout`,
+        headers: {
+            'Authorization': 'Bearer ' + jwt
+        }
+    }).then((result) => {
+        localStorage.removeItem('jwt')
+        location.reload()
+    }).catch((err) => {
+        console.error(err)
+    });
+  }
