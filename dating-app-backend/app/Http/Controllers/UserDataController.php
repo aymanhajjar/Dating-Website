@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Location;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use App\Models\Message;
 use App\Models\Conversation;
 use App\Models\Notification;
@@ -75,6 +76,12 @@ class UserDataController extends Controller{
                 'notifications' => $notfs
             ]);
         }
+
+    public function reset(Request $request) {
+            $email = $request->email;
+            $password = $request->password;
+            User::where('email', $email)->update(['password' => Hash::make($password)]);
+    }
 
     public function getInfo(Request $request)
     {

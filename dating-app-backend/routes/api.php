@@ -29,6 +29,7 @@ Route::controller(AuthController::class)->group(function () {
     Route::post('login', 'login');
     Route::post('register', 'register');
     Route::post('logout', 'logout');
+    Route::post('reset', 'reset');
     Route::post('refresh', 'refresh');
 
 });
@@ -46,6 +47,7 @@ Route::controller(UserDataController::class)->group(function () {
     Route::middleware('auth:api')->get('getconvos', 'getConvos');
     Route::middleware('auth:api')->get('getconvo', 'getConvo');
     Route::middleware('auth:api')->get('getnotifications', 'getNotifications');
+    Route::post('reset', 'reset');
     Route::middleware('auth:api')->get('getinfo', 'getInfo');
     Route::middleware('auth:api')->post('updateinfo', 'updateInfo');
     Route::middleware('auth:api')->post('sendmessage', 'sendMessage');

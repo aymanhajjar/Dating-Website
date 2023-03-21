@@ -134,9 +134,26 @@
                     <input id="password-login" type="password" placeholder="Password">
                 </div>
                 <div class="errormessage" id="errormessage-login"></div>
+                <span>Forgot your password? <a onclick="openForm('reset')">Reset it</a></span>
                 <button type="button" onclick="submitForm('login')">Submit</button>
                 <span>Don't have an account? <a onclick="openForm('register')">Register</a></span>
             </form>
+
+            <form id="reset-form" class="popup-form">
+                <img class="xclose" onclick="closeForm()" src="images/x-close.png">
+                <h3>Reset Password</h3>
+                    <div class="input-container">
+                        <label for="email-reset">Email:</label>
+                        <input id="email-reset" type="email" placeholder="Email">
+                    </div>
+                    <div class="input-container">
+                        <label for="password-reset">New Password:</label>
+                        <input id="password-reset" type="password" placeholder="New Password">
+                    </div>
+                    <div class="errormessage" id="errormessage-reset"></div>
+                    <button type="button" onclick="submitForm('reset')">Submit</button>
+                    <span>Don't have an account? <a onclick="openForm('register')">Register</a></span>
+                </form>
 
             <div id="convo-popup" class="conversation-container">
                 <img class="xclose-message" onclick="closeConvo()" src="images/x-close.png">

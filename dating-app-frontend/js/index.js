@@ -25,6 +25,10 @@ const edit_age = document.getElementById('edit-age')
 const edit_location = document.getElementById('edit-location')
 const edit_gender = document.getElementById('edit-gender')
 const edit_bio = document.getElementById('edit-bio')
+const reset_form = document.getElementById('reset-form')
+const email_reset = document.getElementById('email-reset')
+const password_reset = document.getElementById('password-reset')
+const error_reset = document.getElementById('errormessage-reset')
 const users = document.getElementById('users')
 const gender_filter = document.getElementById('gender-filter')
 const age_filter = document.getElementById('age-filter')
@@ -212,10 +216,18 @@ function openForm(form) {
         main_container.classList.add('containerBlur')
         login_form.classList.remove('openForm')
         browse_container.classList.add('containerBlur')
+        reset_form.classList.remove('openForm')
     } else if(form == 'login') {
         login_form.classList.add('openForm')
         main_container.classList.add('containerBlur')
         register_form.classList.remove('openForm')
+        browse_container.classList.add('containerBlur')
+        reset_form.classList.remove('openForm')
+    } else if(form == 'reset') {
+        login_form.classList.remove('openForm')
+        main_container.classList.add('containerBlur')
+        register_form.classList.remove('openForm')
+        reset_form.classList.add('openForm')
         browse_container.classList.add('containerBlur')
     }
 }
@@ -223,6 +235,7 @@ function openForm(form) {
 function closeForm() {
     register_form.classList.remove('openForm')
     login_form.classList.remove('openForm')
+    reset_form.classList.remove('openForm')
     main_container.classList.remove('containerBlur')
 }
 
@@ -281,6 +294,26 @@ function submitForm(form) {
                 if(err.response.status == 401) {
                     error_login.innerHTML = 'Wrong email/password'
                 } else if(err.response.status == 422) {
+                    error_login.innerHTML = 'Wrong email/password formats'
+                }
+                else {
+                    console.error(err)
+                }
+            });
+    }
+    if(form == 'reset') {
+        let reset_data = new FormData();
+            reset_data.append('email', email_reset.value)
+            reset_data.append('password', password_reset.value)
+
+            axios({
+                "method": "post",
+                "url": `${website.url}/reset`,
+                'data': reset_data
+            }).then((result) => {
+                closeForm()
+            }).catch((err) => {
+                if(err.response.status == 422) {
                     error_login.innerHTML = 'Wrong email/password formats'
                 }
                 else {
